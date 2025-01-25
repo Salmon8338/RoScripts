@@ -44,29 +44,52 @@
         button:hover {
             background-color: #0056b3;
         }
+        .form-container {
+            padding: 20px;
+            background-color: #fff;
+            margin: 20px;
+        }
+        .auth-form {
+            padding: 20px;
+            background-color: #fff;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            width: 300px;
+            margin: auto;
+        }
+        input, button {
+            margin-bottom: 10px;
+            padding: 10px;
+        }
     </style>
 </head>
 <body>
-    <!-- The list of scripts will be displayed here -->
-    <div id="scripts-list" class="scripts-list"></div>
+    <div id="auth-container"></div> <!-- For Login/Sign-up -->
 
-    <!-- Form to submit new scripts -->
-    <div style="padding: 20px; background-color: #fff; margin: 20px;">
-        <h2>Submit a Script</h2>
-        <form id="submit-script-form">
-            <input type="text" id="script-title" placeholder="Enter script title" required style="width: 100%; padding: 10px; margin-bottom: 10px;">
-            <textarea id="script-content" placeholder="Enter script content" required style="width: 100%; height: 150px; padding: 10px;"></textarea>
-            <br>
-            <button type="submit">Submit Script</button>
-        </form>
+    <div id="scripts-container" style="display: none;">
+        <h1>Welcome to the Script Sharing Platform</h1>
+        <button onclick="showCreateForm()">Create a New Script</button>
+        <div id="scripts-list" class="scripts-list"></div>
+
+        <!-- Form to create a script -->
+        <div id="create-script-form" class="form-container" style="display: none;">
+            <h2>Create Script</h2>
+            <form id="submit-script-form">
+                <input type="text" id="script-title" placeholder="Enter script title" required>
+                <textarea id="script-content" placeholder="Enter script content" required></textarea>
+                <button type="submit">Submit Script</button>
+            </form>
+        </div>
     </div>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
 
     <script>
-        // Your Firebase configuration
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBKTLEQ53vXLwzuBriS4662fh14s6yeI0M",
             authDomain: "roscripts-cf889.firebaseapp.com",
@@ -80,6 +103,7 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
 
         // Reference to the "scripts" collection
         const scriptsRef = collection(db, "scripts");
@@ -90,7 +114,8 @@
                 const docRef = await addDoc(scriptsRef, {
                     title: title,
                     content: content,
-                    timestamp: new Date()
+                    timestamp: new Date(),
+                    userId: auth.currentUser.uid
                 });
                 console.log("Document written with ID: ", docRef.id);
                 loadScripts(); // Reload scripts after submission
@@ -142,8 +167,88 @@
             document.getElementById('script-content').value = '';
         });
 
-        // Load scripts when the page loads
-        window.onload = loadScripts;
+        // Show the script creation form
+        function showCreateForm() {
+            document.getElementById('create-script-form').style.display = 'block';
+        }
+
+        // Auth: Sign up
+        async function signUp(email, password) {
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                console.log('Signed Up:', userCredential.user);
+                loadScripts();
+            } catch (error) {
+                console.error("Error signing up:", error.message);
+            }
+        }
+
+        // Auth: Sign in
+        async function signIn(email, password) {
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                console.log('Signed In:', userCredential.user);
+                loadScripts();
+            } catch (error) {
+                console.error("Error signing in:", error.message);
+            }
+        }
+
+        // Auth: Log out
+        async function logOut() {
+            try {
+                await signOut(auth);
+                console.log('Logged Out');
+                document.getElementById('auth-container').innerHTML = createAuthForm();
+            } catch (error) {
+                console.error("Error logging out:", error.message);
+            }
+        }
+
+        // Create login/signup form
+        function createAuthForm() {
+            return `
+                <div class="auth-form">
+                    <h3>Login / Sign Up</h3>
+                    <input type="email" id="auth-email" placeholder="Email" required />
+                    <input type="password" id="auth-password" placeholder="Password" required />
+                    <button onclick="loginSignup()">Login / Sign Up</button>
+                </div>
+            `;
+        }
+
+        // Handle login/signup
+        function loginSignup() {
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+
+            const isSignup = document.querySelector('.auth-form button').innerText.includes("Sign Up");
+            if (isSignup) {
+                signUp(email, password);
+            } else {
+                signIn(email, password);
+            }
+        }
+
+        // Watch for user state change (login/signup)
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                // User is logged in
+                document.getElementById('auth-container').innerHTML = `
+                    <button onclick="logOut()">Log Out</button>
+                `;
+                document.getElementById('scripts-container').style.display = 'block';
+                loadScripts();
+            } else {
+                // No user logged in
+                document.getElementById('auth-container').innerHTML = createAuthForm();
+                document.getElementById('scripts-container').style.display = 'none';
+            }
+        });
+
+        window.onload = () => {
+            loadScripts();
+        };
     </script>
 </body>
 </html>
