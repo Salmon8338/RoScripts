@@ -4,95 +4,136 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Roblox Script Sharing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
+            background-color: #f7f7f7;
         }
         header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
             background-color: #333;
             color: white;
-            text-align: center;
-            padding: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        header img {
+            width: 40px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        header img:hover {
+            transform: scale(1.1);
         }
         .container {
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 100px auto 50px auto;
             padding: 20px;
+            text-align: center;
         }
-        h1 {
-            font-size: 2.5rem;
+        .search-bar {
+            width: 80%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            margin: 20px auto;
+            transition: all 0.3s ease;
         }
-        .form-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        input, textarea {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-        }
-        button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        button:hover {
-            background-color: #45a049;
+        .search-bar:focus {
+            border-color: #4CAF50;
+            outline: none;
         }
         .scripts-list {
-            margin-top: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 20px;
         }
-        .script-item {
+        .script-card {
             background-color: white;
-            margin: 15px 0;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 200px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .script-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        .script-card img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .script-card h3 {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+        .script-card p {
+            color: #555;
+        }
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #777;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Roblox Script Sharing Hub</h1>
-        <p>Share and discover amazing Roblox scripts!</p>
+        <img src="https://via.placeholder.com/150" alt="Home" id="homeButton">
+        <h1>Roblox Script Sharing</h1>
     </header>
 
     <div class="container">
-        <div class="form-container">
-            <h2>Submit a New Script</h2>
-            <form action="https://formsubmit.co/YOUR_EMAIL" method="POST">
-                <input type="text" name="script_name" placeholder="Script Name" required>
-                <textarea name="script_code" placeholder="Paste your script code here..." rows="10" required></textarea>
-                <input type="email" name="email" placeholder="Your Email" required>
-                <button type="submit">Submit Script</button>
-            </form>
-        </div>
+        <!-- Search Bar -->
+        <input type="text" class="search-bar" placeholder="Search scripts...">
 
+        <!-- Script Cards -->
         <div class="scripts-list">
-            <h2>Shared Scripts</h2>
-
-            <div class="script-item">
-                <h3>Sample Script 1</h3>
-                <pre>-- Sample Roblox script code here</pre>
+            <div class="script-card" onclick="openScript('Script 1')">
+                <img src="https://via.placeholder.com/200" alt="Script Image">
+                <h3>Script 1</h3>
+                <p>Click to view the script</p>
             </div>
-
-            <div class="script-item">
-                <h3>Sample Script 2</h3>
-                <pre>-- Another sample Roblox script code here</pre>
+            <div class="script-card" onclick="openScript('Script 2')">
+                <img src="https://via.placeholder.com/200" alt="Script Image">
+                <h3>Script 2</h3>
+                <p>Click to view the script</p>
             </div>
-
-            <!-- Additional scripts can be added here manually or dynamically through backend services -->
+            <div class="script-card" onclick="openScript('Script 3')">
+                <img src="https://via.placeholder.com/200" alt="Script Image">
+                <h3>Script 3</h3>
+                <p>Click to view the script</p>
+            </div>
         </div>
     </div>
+
+    <footer>
+        <p>Made with ❤️ for Roblox script sharing</p>
+    </footer>
+
+    <script>
+        // Redirect to home when the image is clicked
+        document.getElementById('homeButton').addEventListener('click', function() {
+            window.location.href = 'https://yourwebsite.github.io';  // Update with your website URL
+        });
+
+        // Function to handle script clicks
+        function openScript(scriptName) {
+            alert('Opening ' + scriptName);  // Placeholder, you can link to another page or show script content dynamically
+        }
+    </script>
 </body>
 </html>
