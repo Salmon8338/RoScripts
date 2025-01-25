@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Script Sharing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        #scripts-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+        }
+        .script-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            width: 300px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .script-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+        }
+        .script-card h3 {
+            margin-top: 0;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <!-- The list of scripts will be displayed here -->
+    <div id="scripts-list" class="scripts-list"></div>
+
+    <!-- Form to submit new scripts -->
+    <div style="padding: 20px; background-color: #fff; margin: 20px;">
+        <h2>Submit a Script</h2>
+        <form id="submit-script-form">
+            <input type="text" id="script-title" placeholder="Enter script title" required style="width: 100%; padding: 10px; margin-bottom: 10px;">
+            <textarea id="script-content" placeholder="Enter script content" required style="width: 100%; height: 150px; padding: 10px;"></textarea>
+            <br>
+            <button type="submit">Submit Script</button>
+        </form>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+
+    <script>
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBKTLEQ53vXLwzuBriS4662fh14s6yeI0M",
+            authDomain: "roscripts-cf889.firebaseapp.com",
+            projectId: "roscripts-cf889",
+            storageBucket: "roscripts-cf889.firebasestorage.app",
+            messagingSenderId: "423688556207",
+            appId: "1:423688556207:web:c2a0df11911b9c411dce5a",
+            measurementId: "G-MDXMHBE6Y8"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Reference to the "scripts" collection
+        const scriptsRef = collection(db, "scripts");
+
+        // Function to submit a script
+        async function submitScript(title, content) {
+            try {
+                const docRef = await addDoc(scriptsRef, {
+                    title: title,
+                    content: content,
+                    timestamp: new Date()
+                });
+                console.log("Document written with ID: ", docRef.id);
+                loadScripts(); // Reload scripts after submission
+            } catch (e) {
+                console.error("Error adding document: ", e);
+            }
+        }
+
+        // Function to load and display all scripts
+        async function loadScripts() {
+            try {
+                const querySnapshot = await getDocs(scriptsRef);
+                const scriptsList = document.getElementById('scripts-list');
+                scriptsList.innerHTML = ''; // Clear existing content
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const scriptCard = document.createElement('div');
+                    scriptCard.classList.add('script-card');
+                    scriptCard.innerHTML = `
+                        <h3>${data.title}</h3>
+                        <p>${data.content.substring(0, 100)}...</p>
+                        <button onclick="openScript('${doc.id}')">View Full Script</button>
+                    `;
+                    scriptsList.appendChild(scriptCard);
+                });
+            } catch (e) {
+                console.error("Error getting documents: ", e);
+            }
+        }
+
+        // Function to open a script
+        function openScript(docId) {
+            alert(`You are viewing script with ID: ${docId}`);
+            // You can fetch and display full script content here
+        }
+
+        // Handle form submission
+        document.getElementById('submit-script-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent page reload
+            const title = document.getElementById('script-title').value;
+            const content = document.getElementById('script-content').value;
+
+            // Submit the new script
+            submitScript(title, content);
+
+            // Clear the form fields
+            document.getElementById('script-title').value = '';
+            document.getElementById('script-content').value = '';
+        });
+
+        // Load scripts when the page loads
+        window.onload = loadScripts;
+    </script>
+</body>
+</html>
