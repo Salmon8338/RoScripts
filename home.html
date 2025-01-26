@@ -3,16 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roblox Script Sharing</title>
+    <title>RoScripts</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        /* Your existing styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+        }
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        header img {
+            width: 40px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        header img:hover {
+            transform: scale(1.1);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 100px auto 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .search-bar {
+            width: 80%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            margin: 20px auto;
+            transition: all 0.3s ease;
+        }
+        .search-bar:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        .scripts-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 20px;
+        }
+        .script-card {
+            background-color: white;
+            width: 200px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .script-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        .script-card img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .script-card h3 {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+        .script-card p {
+            color: #555;
+        }
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #777;
+        }
     </style>
 </head>
 <body>
     <header>
         <img src="https://via.placeholder.com/150" alt="Home" id="homeButton">
-        <h1>Roblox Script Sharing</h1>
+        <h1>RoScripts</h1>
     </header>
 
     <div class="container">
@@ -29,10 +110,11 @@
         <p>Made with ❤️ for Roblox script sharing</p>
     </footer>
 
+    <!-- Firebase Script -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
 
-    <script>
+    <script type="module">
         // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBKTLEQ53vXLwzuBriS4662fh14s6yeI0M",
@@ -49,11 +131,10 @@
         const db = firebase.firestore(app);
 
         // Fetch Scripts from Firestore
-        function loadScripts() {
+        async function loadScripts() {
             const scriptsList = document.getElementById('scriptsList');
-
-            // Access the 'scripts' collection from Firestore
-            db.collection('scripts').get().then((querySnapshot) => {
+            try {
+                const querySnapshot = await getDocs(collection(db, "scripts"));
                 querySnapshot.forEach((doc) => {
                     const scriptData = doc.data();
 
@@ -70,14 +151,14 @@
 
                     scriptsList.appendChild(scriptCard);
                 });
-            }).catch((error) => {
+            } catch (error) {
                 console.error("Error getting documents: ", error);
-            });
+            }
         }
 
         // Function to open the script
         function openScript(scriptId) {
-            alert(`Opening script ${scriptId}`); // You can redirect or display script content here
+            alert(`Opening script ${scriptId}`); // Placeholder for script details page
         }
 
         // Load scripts on page load
