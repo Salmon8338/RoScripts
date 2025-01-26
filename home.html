@@ -147,6 +147,21 @@
     </footer>
 
     <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBKTLEQ53vXLwzuBriS4662fh14s6yeI0M",
+            authDomain: "roscripts-cf889.firebaseapp.com",
+            projectId: "roscripts-cf889",
+            storageBucket: "roscripts-cf889.firebasestorage.app",
+            messagingSenderId: "423688556207",
+            appId: "1:423688556207:web:c2a0df11911b9c411dce5a",
+            measurementId: "G-MDXMHBE6Y8"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
         // Redirect to home when the image is clicked
         document.getElementById('homeButton').addEventListener('click', function() {
             window.location.href = 'home.html';  // Ensures you stay on the home page
