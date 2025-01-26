@@ -6,104 +6,7 @@
     <title>Roblox Script Sharing</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        /* Same styles as before */
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f7f7f7;
-        }
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 20px;
-            background-color: #333;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-        }
-        header img {
-            width: 40px;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-        header img:hover {
-            transform: scale(1.1);
-        }
-        .container {
-            max-width: 1200px;
-            margin: 100px auto 50px auto;
-            padding: 20px;
-            text-align: center;
-        }
-        .search-bar {
-            width: 80%;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid #ccc;
-            font-size: 16px;
-            margin: 20px auto;
-            transition: all 0.3s ease;
-        }
-        .search-bar:focus {
-            border-color: #4CAF50;
-            outline: none;
-        }
-        .scripts-list {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            gap: 20px;
-        }
-        .script-card {
-            background-color: white;
-            width: 200px;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .script-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-        }
-        .script-card img {
-            width: 100%;
-            border-radius: 10px;
-        }
-        .script-card h3 {
-            margin-top: 10px;
-            font-size: 18px;
-        }
-        .script-card p {
-            color: #555;
-        }
-        footer {
-            text-align: center;
-            margin-top: 50px;
-            color: #777;
-        }
-        .auth-buttons {
-            margin-top: 20px;
-        }
-        .auth-buttons button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 10px;
-        }
-        .auth-buttons button:hover {
-            background-color: #45a049;
-        }
+        /* Your existing styles */
     </style>
 </head>
 <body>
@@ -117,28 +20,8 @@
         <input type="text" class="search-bar" placeholder="Search scripts...">
 
         <!-- Script Cards -->
-        <div class="scripts-list">
-            <div class="script-card" onclick="openScript('Script 1')">
-                <img src="https://via.placeholder.com/200" alt="Script Image">
-                <h3>Script 1</h3>
-                <p>Click to view the script</p>
-            </div>
-            <div class="script-card" onclick="openScript('Script 2')">
-                <img src="https://via.placeholder.com/200" alt="Script Image">
-                <h3>Script 2</h3>
-                <p>Click to view the script</p>
-            </div>
-            <div class="script-card" onclick="openScript('Script 3')">
-                <img src="https://via.placeholder.com/200" alt="Script Image">
-                <h3>Script 3</h3>
-                <p>Click to view the script</p>
-            </div>
-        </div>
-
-        <!-- Authentication Buttons -->
-        <div class="auth-buttons">
-            <button onclick="window.location.href='signup.html'">Sign Up</button>
-            <button onclick="window.location.href='login.html'">Login</button>
+        <div class="scripts-list" id="scriptsList">
+            <!-- Scripts will load here dynamically -->
         </div>
     </div>
 
@@ -146,31 +29,64 @@
         <p>Made with ❤️ for Roblox script sharing</p>
     </footer>
 
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+
     <script>
-        // Firebase configuration
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBKTLEQ53vXLwzuBriS4662fh14s6yeI0M",
             authDomain: "roscripts-cf889.firebaseapp.com",
             projectId: "roscripts-cf889",
-            storageBucket: "roscripts-cf889.firebasestorage.app",
+            storageBucket: "roscripts-cf889.appspot.com",
             messagingSenderId: "423688556207",
             appId: "1:423688556207:web:c2a0df11911b9c411dce5a",
             measurementId: "G-MDXMHBE6Y8"
         };
 
         // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore(app);
+
+        // Fetch Scripts from Firestore
+        function loadScripts() {
+            const scriptsList = document.getElementById('scriptsList');
+
+            // Access the 'scripts' collection from Firestore
+            db.collection('scripts').get().then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    const scriptData = doc.data();
+
+                    // Create the script card
+                    const scriptCard = document.createElement('div');
+                    scriptCard.classList.add('script-card');
+                    scriptCard.setAttribute('onclick', `openScript('${doc.id}')`);
+
+                    scriptCard.innerHTML = `
+                        <img src="${scriptData.image}" alt="Script Image">
+                        <h3>${scriptData.name}</h3>
+                        <p>${scriptData.description}</p>
+                    `;
+
+                    scriptsList.appendChild(scriptCard);
+                });
+            }).catch((error) => {
+                console.error("Error getting documents: ", error);
+            });
+        }
+
+        // Function to open the script
+        function openScript(scriptId) {
+            alert(`Opening script ${scriptId}`); // You can redirect or display script content here
+        }
+
+        // Load scripts on page load
+        window.onload = loadScripts;
 
         // Redirect to home when the image is clicked
         document.getElementById('homeButton').addEventListener('click', function() {
-            window.location.href = 'home.html';  // Ensures you stay on the home page
+            window.location.href = 'home.html';  // Update with your website URL
         });
-
-        // Function to handle script clicks
-        function openScript(scriptName) {
-            alert('Opening ' + scriptName);  // Placeholder, you can link to another page or show script content dynamically
-        }
     </script>
 </body>
 </html>
