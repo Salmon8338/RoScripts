@@ -6,7 +6,6 @@
     <title>Create Roblox Script</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        /* Add some basic styles here */
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #f7f7f7;
@@ -53,13 +52,15 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
 
     <script>
+        // Firebase configuration
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID",
+            apiKey: "AIzaSyBKTLEQ53vXLwzuBriS4662fh14s6yeI0M",
+            authDomain: "roscripts-cf889.firebaseapp.com",
+            projectId: "roscripts-cf889",
+            storageBucket: "roscripts-cf889.firebasestorage.app",
+            messagingSenderId: "423688556207",
+            appId: "1:423688556207:web:c2a0df11911b9c411dce5a",
+            measurementId: "G-MDXMHBE6Y8"
         };
 
         // Initialize Firebase
@@ -73,19 +74,6 @@
             const title = document.getElementById('script-title').value;
             const content = document.getElementById('script-content').value;
 
-            // Add the new script to Firebase Firestore
-            db.collection('scripts').add({
-                title: title,
-                content: content,
-                userId: auth.currentUser.uid,
-                timestamp: new Date()
-            }).then(() => {
-                alert("Script created successfully!");
-                window.location.href = 'home.html';  // Redirect to home after submission
-            }).catch(error => {
-                console.error("Error adding script: ", error);
-            });
-        });
-    </script>
-</body>
-</html>
+            // Check if the user is logged in
+            if (auth.currentUser) {
+                // Add the new script
