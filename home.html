@@ -3,252 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Script Sharing</title>
+    <title>Roblox Script Sharing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
+        /* Same styles as before */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f0f0f0;
+            background-color: #f7f7f7;
         }
-        #scripts-list {
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        header img {
+            width: 40px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        header img:hover {
+            transform: scale(1.1);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 100px auto 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .search-bar {
+            width: 80%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            margin: 20px auto;
+            transition: all 0.3s ease;
+        }
+        .search-bar:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        .scripts-list {
             display: flex;
             flex-wrap: wrap;
+            justify-content: space-around;
             gap: 20px;
-            padding: 20px;
         }
         .script-card {
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            width: 300px;
+            background-color: white;
+            width: 200px;
             padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         .script-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        .script-card img {
+            width: 100%;
+            border-radius: 10px;
         }
         .script-card h3 {
-            margin-top: 0;
+            margin-top: 10px;
+            font-size: 18px;
         }
-        button {
-            background-color: #007bff;
+        .script-card p {
+            color: #555;
+        }
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #777;
+        }
+        .auth-buttons {
+            margin-top: 20px;
+        }
+        .auth-buttons button {
+            background-color: #4CAF50;
             color: white;
+            padding: 10px 20px;
             border: none;
-            padding: 10px;
-            cursor: pointer;
             border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
         }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .form-container {
-            padding: 20px;
-            background-color: #fff;
-            margin: 20px;
-        }
-        .auth-form {
-            padding: 20px;
-            background-color: #fff;
-            margin: 20px;
-            display: flex;
-            flex-direction: column;
-            width: 300px;
-            margin: auto;
-        }
-        input, button {
-            margin-bottom: 10px;
-            padding: 10px;
+        .auth-buttons button:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
 <body>
-    <div id="auth-container"></div> <!-- For Login/Sign-up -->
+    <header>
+        <img src="https://via.placeholder.com/150" alt="Home" id="homeButton">
+        <h1>Roblox Script Sharing</h1>
+    </header>
 
-    <div id="scripts-container" style="display: none;">
-        <h1>Welcome to the Script Sharing Platform</h1>
-        <button onclick="showCreateForm()">Create a New Script</button>
-        <div id="scripts-list" class="scripts-list"></div>
+    <div class="container">
+        <!-- Search Bar -->
+        <input type="text" class="search-bar" placeholder="Search scripts...">
 
-        <!-- Form to create a script -->
-        <div id="create-script-form" class="form-container" style="display: none;">
-            <h2>Create Script</h2>
-            <form id="submit-script-form">
-                <input type="text" id="script-title" placeholder="Enter script title" required>
-                <textarea id="script-content" placeholder="Enter script content" required></textarea>
-                <button type="submit">Submit Script</button>
-            </form>
+        <!-- Script Cards -->
+        <div class="scripts-list">
+            <div class="script-card" onclick="openScript('Script 1')">
+                <img src="https://via.placeholder.com/200" alt="Script Image">
+                <h3>Script 1</h3>
+                <p>Click to view the script</p>
+            </div>
+            <div class="script-card" onclick="openScript('Script 2')">
+                <img src="https://via.placeholder.com/200" alt="Script Image">
+                <h3>Script 2</h3>
+                <p>Click to view the script</p>
+            </div>
+            <div class="script-card" onclick="openScript('Script 3')">
+                <img src="https://via.placeholder.com/200" alt="Script Image">
+                <h3>Script 3</h3>
+                <p>Click to view the script</p>
+            </div>
+        </div>
+
+        <!-- Authentication Buttons -->
+        <div class="auth-buttons">
+            <button onclick="window.location.href='signup.html'">Sign Up</button>
+            <button onclick="window.location.href='login.html'">Login</button>
         </div>
     </div>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <footer>
+        <p>Made with ❤️ for Roblox script sharing</p>
+    </footer>
 
     <script>
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyBKTLEQ53vXLwzuBriS4662fh14s6yeI0M",
-            authDomain: "roscripts-cf889.firebaseapp.com",
-            projectId: "roscripts-cf889",
-            storageBucket: "roscripts-cf889.firebasestorage.app",
-            messagingSenderId: "423688556207",
-            appId: "1:423688556207:web:c2a0df11911b9c411dce5a",
-            measurementId: "G-MDXMHBE6Y8"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-
-        // Reference to the "scripts" collection
-        const scriptsRef = collection(db, "scripts");
-
-        // Function to submit a script
-        async function submitScript(title, content) {
-            try {
-                const docRef = await addDoc(scriptsRef, {
-                    title: title,
-                    content: content,
-                    timestamp: new Date(),
-                    userId: auth.currentUser.uid
-                });
-                console.log("Document written with ID: ", docRef.id);
-                loadScripts(); // Reload scripts after submission
-            } catch (e) {
-                console.error("Error adding document: ", e);
-            }
-        }
-
-        // Function to load and display all scripts
-        async function loadScripts() {
-            try {
-                const querySnapshot = await getDocs(scriptsRef);
-                const scriptsList = document.getElementById('scripts-list');
-                scriptsList.innerHTML = ''; // Clear existing content
-
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const scriptCard = document.createElement('div');
-                    scriptCard.classList.add('script-card');
-                    scriptCard.innerHTML = `
-                        <h3>${data.title}</h3>
-                        <p>${data.content.substring(0, 100)}...</p>
-                        <button onclick="openScript('${doc.id}')">View Full Script</button>
-                    `;
-                    scriptsList.appendChild(scriptCard);
-                });
-            } catch (e) {
-                console.error("Error getting documents: ", e);
-            }
-        }
-
-        // Function to open a script
-        function openScript(docId) {
-            alert(`You are viewing script with ID: ${docId}`);
-            // You can fetch and display full script content here
-        }
-
-        // Handle form submission
-        document.getElementById('submit-script-form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent page reload
-            const title = document.getElementById('script-title').value;
-            const content = document.getElementById('script-content').value;
-
-            // Submit the new script
-            submitScript(title, content);
-
-            // Clear the form fields
-            document.getElementById('script-title').value = '';
-            document.getElementById('script-content').value = '';
+        // Redirect to home when the image is clicked
+        document.getElementById('homeButton').addEventListener('click', function() {
+            window.location.href = 'home.html';  // Ensures you stay on the home page
         });
 
-        // Show the script creation form
-        function showCreateForm() {
-            document.getElementById('create-script-form').style.display = 'block';
+        // Function to handle script clicks
+        function openScript(scriptName) {
+            alert('Opening ' + scriptName);  // Placeholder, you can link to another page or show script content dynamically
         }
-
-        // Auth: Sign up
-        async function signUp(email, password) {
-            try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                console.log('Signed Up:', userCredential.user);
-                loadScripts();
-            } catch (error) {
-                console.error("Error signing up:", error.message);
-            }
-        }
-
-        // Auth: Sign in
-        async function signIn(email, password) {
-            try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                console.log('Signed In:', userCredential.user);
-                loadScripts();
-            } catch (error) {
-                console.error("Error signing in:", error.message);
-            }
-        }
-
-        // Auth: Log out
-        async function logOut() {
-            try {
-                await signOut(auth);
-                console.log('Logged Out');
-                document.getElementById('auth-container').innerHTML = createAuthForm();
-            } catch (error) {
-                console.error("Error logging out:", error.message);
-            }
-        }
-
-        // Create login/signup form
-        function createAuthForm() {
-            return `
-                <div class="auth-form">
-                    <h3>Login / Sign Up</h3>
-                    <input type="email" id="auth-email" placeholder="Email" required />
-                    <input type="password" id="auth-password" placeholder="Password" required />
-                    <button onclick="loginSignup()">Login / Sign Up</button>
-                </div>
-            `;
-        }
-
-        // Handle login/signup
-        function loginSignup() {
-            const email = document.getElementById('auth-email').value;
-            const password = document.getElementById('auth-password').value;
-
-            const isSignup = document.querySelector('.auth-form button').innerText.includes("Sign Up");
-            if (isSignup) {
-                signUp(email, password);
-            } else {
-                signIn(email, password);
-            }
-        }
-
-        // Watch for user state change (login/signup)
-        onAuthStateChanged(auth, user => {
-            if (user) {
-                // User is logged in
-                document.getElementById('auth-container').innerHTML = `
-                    <button onclick="logOut()">Log Out</button>
-                `;
-                document.getElementById('scripts-container').style.display = 'block';
-                loadScripts();
-            } else {
-                // No user logged in
-                document.getElementById('auth-container').innerHTML = createAuthForm();
-                document.getElementById('scripts-container').style.display = 'none';
-            }
-        });
-
-        window.onload = () => {
-            loadScripts();
-        };
     </script>
 </body>
 </html>
